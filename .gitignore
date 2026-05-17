@@ -1,3 +1,4 @@
 .env
 bosco_financial_os.db
-DATA - EXCEL .xlsx.DS_Store
+DATA - EXCEL .xlsx
+.DS_Store
