@@ -87,6 +87,13 @@ CREATE TABLE IF NOT EXISTS decisions (
 # --- HISTORIQUE ---
 st.header("Historique des décisions")
 conn = sqlite3.connect("bosco_financial_os.db")
+cursor = conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS decisions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT, decision TEXT, contexte TEXT, raisonnement TEXT, invalidation TEXT
+)""")
+conn.commit()
 decisions = pd.read_sql("SELECT date, decision, invalidation FROM decisions ORDER BY id DESC", conn)
 conn.close()
 st.dataframe(decisions)
