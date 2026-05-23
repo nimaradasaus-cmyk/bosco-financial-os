@@ -332,15 +332,32 @@ with tab2:
     st.subheader("Snapshot Portefeuille")
 
     if not df_investing.empty:
-        # Affichage du tableau avec couleurs P/L
+        # Arrondi à 2 décimales pour la lisibilité
+        df_display = df_investing.copy()
+        df_display["Investi (AUD)"]   = df_display["Investi (AUD)"].map("{:.2f}".format)
+        df_display["Valeur actuelle"] = df_display["Valeur actuelle"].map("{:.2f}".format)
+
         def color_pl(val):
-            if isinstance(val, (int, float)):
-                color = "#d4edda" if val > 0 else ("#f8d7da" if val < 0 else "")
-                return f"background-color: {color}" if color else ""
+            try:
+                v = float(val)
+                if v > 0:   return "background-color: #d4edda; color: #155724"
+                if v < 0:   return "background-color: #f8d7da; color: #721c24"
+            except:
+                pass
             return ""
 
+        def fmt_signed(val):
+            try:
+                v = float(val)
+                return f"+{v:.2f}" if v > 0 else f"{v:.2f}"
+            except:
+                return val
+
+        df_display["P/L (AUD)"] = df_investing["P/L (AUD)"].apply(fmt_signed)
+        df_display["ROI (%)"]   = df_investing["ROI (%)"].apply(fmt_signed)
+
         st.dataframe(
-            df_investing.style.map(color_pl, subset=["P/L (AUD)", "ROI (%)"]),
+            df_display.style.map(color_pl, subset=["P/L (AUD)", "ROI (%)"]),
             use_container_width=True, hide_index=True
         )
     else:
